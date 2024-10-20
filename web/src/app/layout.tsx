@@ -3,6 +3,8 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Link from "next/link"
+import { ModeToggle } from "@/components/theme/toggle"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -26,12 +28,14 @@ export default function RootLayout({
                   Wanderly
                 </div>
               </Link>
+              <ModeToggle />
             </nav>
 
             <div className="z-10 w-full max-w-screen-md items-start justify-start flex flex-col">
               {children}
             </div>
           </main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
