@@ -1,5 +1,6 @@
-export const runtime = "edge";
+"use client"
 
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,7 +20,7 @@ export default function Home() {
     },
   })
 
-  const onSubmit = () => {}
+  async function onSubmit(values: z.infer<typeof formSchema>) {}
 
   return (
     <div className="w-full mt-8">
@@ -27,9 +28,10 @@ export default function Home() {
         Wanderly
       </h1>
       <div className="text-muted-foreground">
-        Check the project out on{" "}
+        Built with Next.js 14 on the edge, Cloudflare Workers &amp; Pages,
+        OpenAI Function Calling, and Langchain. Check it out on{" "}
         <a
-          href="https://github.com/themillenniumfalcon/wanderly"
+          href="https://github.com/ishaan1013/workers-langchain"
           target="_blank"
         >
           <Button className=" p-0 h-auto text-base" variant="link">
@@ -39,7 +41,6 @@ export default function Home() {
         .
       </div>
       <Separator className="my-8" />
-      
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
