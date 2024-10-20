@@ -1,3 +1,5 @@
+export const runtime = "edge";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/seperator";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-export const runtime = "edge";
 
 export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,7 +52,7 @@ export default function Home() {
               <FormItem>
                 <FormLabel>Where are you travelling from?</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g. Toronto, ON" {...field} />
+                  <Input placeholder="e.g. New Delhi, IN" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
