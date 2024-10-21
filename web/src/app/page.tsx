@@ -7,11 +7,15 @@ import * as z from "zod";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 import { formSchema } from "@/lib/schema/formSchema";
+import { resSchema } from "@/lib/schema/resSchema";
+import { useToast } from "@/hooks/use-toast";
+import { formatItinerary } from "@/utils/formatItinerary";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/seperator";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 type DataType = {
   location: string;
@@ -33,7 +37,38 @@ export default function Home() {
   const [data, setData] = useState<DataType>(null)
   const [loading, setLoading] = useState(false)
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {}
+  const { toast } = useToast()
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { fromLocation, description, openai, serp } = values
+    setLoading(true)
+
+    try {
+      const res = await fetch("/api/worker", {
+        method: "POST",
+        body: JSON.stringify({
+          fromLocation,
+          description,
+          openai,
+          serp,
+        }),
+      })
+      const data = await res.json()
+
+      const parsed = resSchema.parse(data)
+      setData(parsed)
+      form.reset()
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description:
+          "There was a problem with the request. Maybe check your API keys?",
+      })
+    }
+
+    setLoading(false)
+  }
 
   return (
     <div className="w-full mt-8">
@@ -54,6 +89,28 @@ export default function Home() {
         .
       </div>
       <Separator className="my-8" />
+
+      {data ? (
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Your trip to {data.location}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {data.itinerary ? (
+              <div className="text-muted-foreground text-sm whitespace-pre-line">
+                {formatItinerary(data.itinerary).substring(2)}
+              </div>
+            ) : null}
+          </CardContent>
+          <Separator />
+          <CardFooter className="pt-6">
+            <div className="text-muted-foreground text-sm font-semibold whitespace-pre-line">
+              {data.flight}
+            </div>
+          </CardFooter>
+        </Card>
+      ) : null}
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
